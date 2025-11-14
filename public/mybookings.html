@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Bookings</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+.container {
+    max-width: 900px;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+}
+.card-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-top: 20px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+th, td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+th {
+    background-color: #007bff;
+    color: white;
+}
+button {
+    padding: 6px 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+button:hover {
+    background-color: #45a049;
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <h2>My Bookings</h2>
+    <div class="card-container">
+        <table id="bookingsTable">
+            <thead>
+                <tr>
+                    <th>Bus Name</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Departure</th>
+                    <th>Seat No</th>
+                    <th>Booking Time</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows populated by JS -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+const user_id = localStorage.getItem('user_id');
+
+function fetchBookings(){
+    fetch('../api.php',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({action:'getMyBookings', user_id})
+    })
+    .then(res => res.json())
+    .then(bookings => {
+        const tbody = document.querySelector('#bookingsTable tbody');
+        tbody.innerHTML = '';
+        if(bookings.length === 0){
+            tbody.innerHTML = '<tr><td colspan="7">No bookings found</td></tr>';
+            return;
+        }
+        bookings.forEach(b => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${b.bus_name}</td>
+                <td>${b.source}</td>
+                <td>${b.destination}</td>
+                <td>${b.departure_time}</td>
+                <td>${b.seat_no}</td>
+                <td>${b.booking_time}</td>
+                <td><button onclick="viewTicket(${b.booking_id})">View Ticket</button></td>
+            `;
+            tbody.appendChild(row);
+        });
+    });
+}
+
+function viewTicket(booking_id){
+    window.location.href = `ticket.html?booking_id=${booking_id}`;
+}
+
+window.onload = fetchBookings;
+</script>
+</body>
+</html>

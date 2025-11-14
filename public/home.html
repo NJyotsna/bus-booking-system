@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Available Buses</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+/* Navbar styling */
+.navbar {
+    display: flex;
+    justify-content: flex-end;
+    background-color: #007bff;
+    padding: 10px 20px;
+    border-radius: 8px;
+}
+.navbar button {
+    margin-left: 10px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+    background-color: #0056b3;
+}
+.navbar button:hover {
+    background-color: #003f7f;
+}
+
+.container { max-width: 1000px; margin: 20px auto; font-family: Arial, sans-serif; }
+.card-container { background-color: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-top: 20px; }
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th, td { padding: 12px; border: 1px solid #ddd; text-align: center; }
+th { background-color: #007bff ; color: white; }
+button { padding: 6px 12px; background-color: #007bff; color: white; border: none; cursor: pointer; border-radius: 4px; }
+button:hover { background-color: #0056b3; }
+.filter-section { margin-top: 20px; display: flex; gap: 10px; align-items: center; }
+.filter-section input, .filter-section select { padding: 6px; font-size: 14px; }
+</style>
+</head>
+<body>
+<!-- Navbar -->
+<div class="navbar">
+    <button onclick="window.location.href='index.html'">Login</button>
+    <button onclick="logout()">Logout</button>
+</div>
+
+<div class="container">
+  <h2>Search Available Buses</h2>
+
+  <div class="filter-section">
+    <input type="text" id="fromCity" placeholder="From City">
+    <input type="text" id="toCity" placeholder="To City">
+    <input type="date" id="travelDate">
+    <button onclick="fetchBuses()">Search</button>
+    <button onclick="viewMyBookings()">View My Bookings</button>
+  </div>
+
+  <div class="card-container">
+    <table id="busesTable">
+      <thead>
+        <tr>
+          <th>Bus Name</th>
+          <th>From</th>
+          <th>To</th>
+          <th>Departure</th>
+          <th>Seats Left</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Rows populated dynamically -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const user_id = localStorage.getItem('user_id');
+if(!user_id) window.location.href = 'index.html';
+
+function logout() {
+    localStorage.clear();
+    window.location.href = 'index.html';
+}
+
+function fetchBuses(){
+  const from = document.getElementById('fromCity').value.trim();
+  const to = document.getElementById('toCity').value.trim();
+  const date = document.getElementById('travelDate').value;
+
+  fetch('../api.php',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({action:'getBuses', from, to, date})
+  })
+  .then(res=>res.json())
+  .then(buses=>{
+    const tbody = document.querySelector('#busesTable tbody');
+    tbody.innerHTML = '';
+    if(buses.length === 0){
+      tbody.innerHTML = '<tr><td colspan="6">No buses found</td></tr>';
+      return;
+    }
+    buses.forEach(bus=>{
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${bus.bus_name}</td>
+        <td>${bus.source}</td>
+        <td>${bus.destination}</td>
+        <td>${bus.departure_time}</td>
+        <td>${bus.seats_available}</td>
+        <td><button onclick="book(${bus.bus_id},${bus.seats_available})">Book Seat</button></td>
+      `;
+      tbody.appendChild(row);
+    });
+  });
+}
+
+function book(bus_id,seats){
+  const seat_no = prompt(`Enter seat number (1-${seats})`);
+  if(!seat_no) return;
+
+  fetch('../api.php',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({action:'bookSeat', user_id, bus_id, seat_no})
+  })
+  .then(res=>res.json())
+  .then(res=>{
+    if(res.status==='success'){
+      alert('Booked successfully!');
+      fetch('../api.php',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({action:'getMyBookings', user_id})
+      })
+      .then(r=>r.json())
+      .then(bookings=>{
+        const latest = bookings[bookings.length-1];
+        window.location.href = `ticket.html?booking_id=${latest.booking_id}`;
+      });
+    } else alert('Error: '+res.msg);
+  });
+}
+
+function viewMyBookings(){ window.location.href='mybookings.html'; }
+
+// Load all buses by default
+fetchBuses();
+</script>
+</body>
+</html>

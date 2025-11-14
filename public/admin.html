@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+<h2>Admin Dashboard - Manage Buses</h2>
+
+<div class="card">
+<h3>Add Bus</h3>
+<input type="text" id="busName" placeholder="Bus Name">
+<input type="text" id="source" placeholder="Source">
+<input type="text" id="destination" placeholder="Destination">
+<input type="time" id="departureTime">
+<input type="number" id="seatsTotal" placeholder="Total Seats">
+<button onclick="addBus()">Add Bus</button>
+</div>
+
+<h3>Existing Buses</h3>
+<table id="busTable">
+<thead>
+<tr>
+<th>Bus Name</th>
+<th>Source</th>
+<th>Destination</th>
+<th>Departure</th>
+<th>Total Seats</th>
+<th>Seats Left</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+
+<script>
+function fetchBuses(){
+    fetch('../api.php',{method:'POST',headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({action:'getBuses'})})
+    .then(res=>res.json())
+    .then(buses=>{
+        const tbody = document.querySelector('#busTable tbody');
+        tbody.innerHTML = '';
+        buses.forEach(bus=>{
+            tbody.innerHTML += `<tr>
+                <td><input value="${bus.bus_name}" id="name${bus.bus_id}"></td>
+                <td><input value="${bus.source}" id="source${bus.bus_id}"></td>
+                <td><input value="${bus.destination}" id="dest${bus.bus_id}"></td>
+                <td><input type="time" value="${bus.departure_time}" id="time${bus.bus_id}"></td>
+                <td><input type="number" value="${bus.seats_total}" id="total${bus.bus_id}"></td>
+                <td>${bus.seats_available}</td>
+                <td>
+                    <button onclick="updateBus(${bus.bus_id})">Update</button>
+                    <button onclick="deleteBus(${bus.bus_id})">Delete</button>
+                </td>
+            </tr>`;
+        });
+    });
+}
+
+function addBus(){
+    const bus_name=document.getElementById('busName').value;
+    const source=document.getElementById('source').value;
+    const destination=document.getElementById('destination').value;
+    const departure_time=document.getElementById('departureTime').value;
+    const seats_total=document.getElementById('seatsTotal').value;
+
+    fetch('../api.php',{method:'POST',headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({action:'addBus', bus_name, source, destination, departure_time, seats_total})})
+    .then(res=>res.json())
+    .then(data=>{if(data.status==='success'){alert('Bus Added!');fetchBuses();}else alert('Error');});
+}
+
+function updateBus(bus_id){
+    const bus_name=document.getElementById('name'+bus_id).value;
+    const source=document.getElementById('source'+bus_id).value;
+    const destination=document.getElementById('dest'+bus_id).value;
+    const departure_time=document.getElementById('time'+bus_id).value;
+    const seats_total=document.getElementById('total'+bus_id).value;
+
+    fetch('../api.php',{method:'POST',headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({action:'updateBus', bus_id, bus_name, source, destination, departure_time, seats_total})})
+    .then(res=>res.json())
+    .then(data=>{if(data.status==='success'){alert('Updated!');fetchBuses();}else alert('Error');});
+}
+
+function deleteBus(bus_id){
+    if(confirm('Delete this bus?')){
+        fetch('../api.php',{method:'POST',headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({action:'deleteBus', bus_id})})
+        .then(res=>res.json())
+        .then(data=>{if(data.status==='success'){alert('Deleted!');fetchBuses();}else alert('Error');});
+    }
+}
+
+fetchBuses();
+</script>
+</body>
+</html>

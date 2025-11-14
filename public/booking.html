@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Available Buses</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+/* Simple table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+th, td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+th {
+    background-color: #007bff;
+    color: white;
+}
+button {
+    padding: 6px 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #45a049;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h2>Available Buses</h2>
+<table id="busesTable">
+    <thead>
+        <tr>
+            <th>Bus Name</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Departure</th>
+            <th>Seats Left</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Rows will be populated here -->
+    </tbody>
+</table>
+</div>
+
+<script>
+const user_id = localStorage.getItem('user_id');
+
+function fetchBuses(){
+    fetch('../api.php',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({action:'getBuses'})
+    })
+    .then(res=>res.json())
+    .then(buses=>{
+        const tbody = document.querySelector('#busesTable tbody');
+        tbody.innerHTML = '';
+        buses.forEach(bus=>{
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${bus.bus_name}</td>
+                <td>${bus.source}</td>
+                <td>${bus.destination}</td>
+                <td>${bus.departure_time}</td>
+                <td>${bus.seats_available}</td>
+                <td><button onclick="book(${bus.bus_id},${bus.seats_available})">Book Seat</button></td>
+            `;
+            tbody.appendChild(row);
+        });
+    });
+}
+
+function book(bus_id,seats){
+    const seat_no = prompt(`Enter seat number (1-${seats})`);
+    if(!seat_no) return;
+
+    fetch('../api.php',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({action:'bookSeat', user_id, bus_id, seat_no})
+    })
+    .then(res=>res.json())
+    .then(res=>{
+        if(res.status==='success'){
+            alert('Booked successfully!');
+            fetch('../api.php',{
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({action:'getMyBookings', user_id})
+            })
+            .then(r=>r.json())
+            .then(bookings=>{
+                const latest = bookings[bookings.length-1];
+                window.location.href = `ticket.html?booking_id=${latest.booking_id}`;
+            });
+        } else alert('Error: '+res.msg);
+    });
+}
+
+fetchBuses();
+</script>
+</body>
+</html>

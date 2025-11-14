@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ticket Details</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+.container {
+    max-width: 600px;
+    margin: 40px auto;
+    font-family: Arial, sans-serif;
+}
+.card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+h2 {
+    text-align: center;
+    color: #007bff;
+}
+p {
+    font-size: 16px;
+    margin: 8px 0;
+}
+button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+button:hover {
+    background-color: #0056b3;
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <h2>Ticket Details</h2>
+        <p><strong>Bus Name:</strong> <span id="busName"></span></p>
+        <p><strong>From:</strong> <span id="source"></span></p>
+        <p><strong>To:</strong> <span id="destination"></span></p>
+        <p><strong>Departure:</strong> <span id="departureTime"></span></p>
+        <p><strong>Seat Number:</strong> <span id="seatNo"></span></p>
+        <p><strong>Booking Time:</strong> <span id="bookingTime"></span></p>
+        <button onclick="goHome()">Back to Home</button>
+    </div>
+</div>
+
+<script>
+const API = '../api.php';
+
+// Get booking_id from URL query
+const params = new URLSearchParams(window.location.search);
+const booking_id = params.get('booking_id');
+
+function fetchTicket() {
+    fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'getTicket', booking_id })
+    })
+    .then(res => res.json())
+    .then(ticket => {
+        if(ticket.error){
+            alert(ticket.error);
+            return;
+        }
+        // Display values
+        document.getElementById('busName').innerText = ticket.bus_name;
+        document.getElementById('source').innerText = ticket.source;
+        document.getElementById('destination').innerText = ticket.destination;
+
+        // Departure time as-is (no timezone conversion)
+        document.getElementById('departureTime').innerText = ticket.departure_time;
+
+        document.getElementById('seatNo').innerText = ticket.seat_no;
+
+        // Booking time: format in local readable format
+        let dt = new Date(ticket.booking_time + ' UTC'); // treat MySQL timestamp as UTC
+        let formatted = dt.toLocaleString('en-IN', { 
+            day: '2-digit', month: '2-digit', year: 'numeric', 
+            hour: '2-digit', minute: '2-digit', hour12: false 
+        });
+        document.getElementById('bookingTime').innerText = formatted;
+    });
+}
+
+function goHome(){
+    window.location.href = 'home.html';
+}
+
+fetchTicket();
+</script>
+</body>
+</html>
