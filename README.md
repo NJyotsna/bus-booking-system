@@ -31,7 +31,7 @@ Try it here [Live Demo](https://jyotsna-bus-booking.rf.gd/public/)
 - **Hosting:** InfinityFree (`.rf.gd` domain)
 
 ## 📸*Screenshots*
-<img width="1919" height="887" alt="image" src="https://github.com/user-attachments/assets/16c9eef5-2786-451d-bec9-e6e48f1bda24" />
+<img width="1919" height="887" alt="image" src="https://github.dev/NJyotsna/bus-booking-system/blob/main/screenshots/bookings.png" />
 
 ## Local Setup Using XAMPP
 
