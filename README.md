@@ -29,9 +29,6 @@ Try it here [Live Demo](https://jyotsna-bus-booking.rf.gd/public/)
 - **Database:** MySQL  
 - **Hosting:** InfinityFree (`.rf.gd` domain)
 
-## 📸*Screenshots*
-<img width="1919" height="887" alt="image" src="https://github.dev/NJyotsna/bus-booking-system/blob/main/screenshots/bookings.png" />
-
 ## Local Setup Using XAMPP
 
 1. **Install XAMPP** and run it.
