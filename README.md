@@ -8,7 +8,7 @@ The **Bus Booking System** is a web-based application that allows users to brows
 
 Try it here [Live Demo](https://jyotsna-bus-booking.rf.gd/public/)
 
-![Bus Booking Demo](https://raw.githubusercontent.com/NJyotsna/bus-booking/main/assets/screenshots/bus-homepage.png
+![Bus Booking](https://raw.githubusercontent.com/NJyotsna/bus-booking/main/assets/screenshots/bus-homepage.png
 )
 
 
