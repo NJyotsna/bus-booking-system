@@ -3,6 +3,10 @@
 ## Project Overview
 The **Bus Booking System** is a web-based application that allows users to browse bus routes, book tickets, and manage reservations. Admins can manage buses, routes, and bookings through a separate dashboard.
 
+## Demo
+Try it here [Live Demo](https://jyotsna-bus-booking.rf.gd/public/)
+![Bus Booking Demo](https://drive.google.com/file/d/1Yr6dN0ggA482yCxx3u9oX_P7wD3Z3hI0/view?usp=sharing)
+
 ## Features
 
 ### User Features
