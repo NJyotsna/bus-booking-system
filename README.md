@@ -30,6 +30,9 @@ Try it here [Live Demo](https://jyotsna-bus-booking.rf.gd/public/)
 - **Database:** MySQL  
 - **Hosting:** InfinityFree (`.rf.gd` domain)
 
+## 📸*Screenshots*
+<img width="1919" height="887" alt="image" src="https://github.com/user-attachments/assets/16c9eef5-2786-451d-bec9-e6e48f1bda24" />
+
 ## Local Setup Using XAMPP
 
 1. **Install XAMPP** and run it.
