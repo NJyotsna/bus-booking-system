@@ -37,14 +37,18 @@ Try it here [Live Demo](https://jyotsna-bus-booking.rf.gd/public/)
    ``C:\xampp\htdocs\bus-booking``
    
 4. Open your browser and navigate to:
-   ``http://localhost/bus-booking/public/index.html``
+   ```
+   http://localhost/bus-booking/public/index.html
+   ```
 
-5. Open **phpMyAdmin**:
-   ``http://localhost/phpmyadmin``
+6. Open **phpMyAdmin**:
+   ```
+   http://localhost/phpmyadmin
+   ```
 
-6. Create a new database (e.g., `bus_booking`).
-7. Import the `db.sql` file into the database.
-8. Update your database credentials in `api.php` if necessary.
+8. Create a new database (e.g., `bus_booking`).
+9. Import the `db.sql` file into the database.
+10. Update your database credentials in `api.php` if necessary.
 
 > Now, user actions like bookings and admin actions like adding buses will be reflected in your local database.
 
