@@ -5,7 +5,7 @@ The **Bus Booking System** is a web-based application that allows users to brows
 
 ## Demo
 Try it here [Live Demo](https://jyotsna-bus-booking.rf.gd/public/)
-![Bus Booking Demo](https://drive.google.com/file/d/1Yr6dN0ggA482yCxx3u9oX_P7wD3Z3hI0/view?usp=sharing)
+![Bus Booking Demo](https://drive.google.com/file/d/1V7YIGP2R_B7hMaH9jIXAzAUOgVK0EVpd/view?usp=sharing)
 
 ## Features
 
