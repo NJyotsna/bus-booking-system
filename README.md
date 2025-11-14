@@ -13,8 +13,7 @@ The **Bus Booking System** is a web-based application that allows users to brows
 - Cancel booked tickets.
 
 ### Admin Features
-- Admin login from `index.html`.
-- Successful admin login redirects to `admin.html`.
+- Admin has seperate access to `admin.html`.
 - Manage buses, routes, and bookings via the admin dashboard.
 
 ## Technologies Used
